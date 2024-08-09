@@ -29,10 +29,60 @@
       <div class="card-header bg-dark">
        <h3 class="text-white">Products</h3>
       </div>
-      
+      <div class="card-body ">
+       <table class="table">
+        <tr>
+         <th>ID</th>
+         <th></th>
+         <th>Name</th>
+         <th>Sky</th>
+         <th>Price</th>
+         <th>Description</th>
+         <th>Created at</th>
+         <th>Action</th>
+        </tr>
+        @if($products->isNotEmpty())
+        @foreach($products as $product)
+        <tr>
+         <td>{{$product->id}}</td>
+         <td>
+          @if($product->image !="")
+            <img width="50" src="{{asset('uploads/products/'.$product->image)}}" alt="">
+          @endif
+         </td>
+         <td>{{$product->name}}</td>
+         <td>{{$product->sku}}</td>
+         <td>₹{{$product->price}}</td>
+         <td>{{$product->description}}</td>
+         <td>{{\carbon\Carbon::parse($product->created_at)->format('d M, Y')}}</td>
+         <td>
+          <a href="{{route('products.edit',$product->id)}}" class="btn btn-dark">Edit</a>
+          <a href="#" onClick="deleteProduct({{$product->id}});" class="btn btn-danger">Delete</a>
+          <form id="delete-product-from-{{$product->id}}" action="{{route('products.destroy',$product->id)}}" method="post">
+           @csrf
+           @method('delete')
+          </form>
+         </td>
+        </tr>
+        @endforeach
+        
+        @endif
+        
+       </table>
+
+      </div>
      </div>
     </div>
    </div>
    </div>
   </body>
 </html>
+
+
+<script>
+ function deleteProduct(id){
+  if(confirm("Are you sure you want to delete this product?")){
+   document.getElementById("delete-product-from-"+id).submit();
+  }
+ }
+</script>
